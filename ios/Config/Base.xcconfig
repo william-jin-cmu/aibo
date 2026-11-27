@@ -1,0 +1,4 @@
+// Shared build settings. Secrets (API base + invite code) live in the git-ignored Secrets.xcconfig.
+AIBO_API_BASE = http:/$()/localhost:8799
+AIBO_INVITE_CODE =
+#include? "Secrets.xcconfig"

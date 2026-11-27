@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aibo",
+  // Personal Cloudflare account (williamjinq@gmail.com). Pinned on purpose so a
+  // deploy can never land on another account the CLI happens to be logged into.
+  "account_id": "b975c9806857f9f5024bfcbd3a373fbf",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "durable_objects": {
+    "bindings": [{ "name": "COMPANION", "class_name": "Companion" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Companion"] }],
+  "d1_databases": [
+    { "binding": "DB", "database_name": "aibo-auth", "database_id": "11ea1f3e-0f3e-4092-ad9e-e5495868ecc4", "migrations_dir": "migrations" }
+  ],
+  // Sign-in codes go out through Cloudflare Email Sending once a sender domain is enabled.
+  "send_email": [{ "name": "EMAIL" }],
+  "vars": {
+    "APPLE_BUNDLE_ID": "dev.aibo.ios",
+    "MAIL_FROM": "Aibo <hello@williamjinq.com>",
+    "LLM_BASE_URL": "https://api.deepseek.com",
+    "LLM_MODEL": "deepseek-flash"
+  }
+  // Secrets (wrangler secret put): DEEPSEEK_API_KEY, TEST_ACCOUNT_EMAIL, TEST_ACCOUNT_CODE
+}

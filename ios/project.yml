@@ -1,0 +1,97 @@
+# xcodegen spec for Aibo iOS. `xcodegen generate` writes Aibo.xcodeproj (git-ignored).
+name: Aibo
+options:
+  bundleIdPrefix: dev.aibo
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+configFiles:
+  Debug: Config/Base.xcconfig
+  Release: Config/Base.xcconfig
+settings:
+  base:
+    DEVELOPMENT_TEAM: 65N4VF5643 # personal team (QIU JIN)
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.10"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  Aibo:
+    type: application
+    platform: iOS
+    sources:
+      - path: Aibo
+      - path: Shared
+    dependencies:
+      - target: AiboWidget
+    entitlements:
+      path: Aibo/Aibo.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+        com.apple.security.application-groups: [group.dev.aibo.ios]
+        com.apple.developer.applesignin: [Default]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.aibo.ios
+        PRODUCT_NAME: Aibo
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Aibo
+        INFOPLIST_KEY_NSHealthShareUsageDescription: Aibo reads your sleep, steps, heart rate and workouts so she can notice how your days are going. Nothing is written back to Health.
+        INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription: Aibo reads your upcoming events so she knows what your day looks like.
+        INFOPLIST_KEY_NSRemindersFullAccessUsageDescription: Aibo reads your open reminders so she can nudge you about the ones that matter.
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: Aibo uses your approximate location for local weather and time-of-day context.
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_UIUserInterfaceStyle: Dark
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+    info:
+      path: Aibo/Info.plist
+      properties:
+        AiboAPIBase: $(AIBO_API_BASE)
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+  AiboWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: AiboWidget
+      - path: Shared
+    entitlements:
+      path: AiboWidget/AiboWidget.entitlements
+      properties:
+        com.apple.security.application-groups: [group.dev.aibo.ios]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.aibo.ios.widget
+        PRODUCT_NAME: AiboWidget
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Aibo
+        SKIP_INSTALL: YES
+    info:
+      path: AiboWidget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+  AiboUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: Aibo
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: dev.aibo.ios.uitests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Aibo:
+    build:
+      targets:
+        Aibo: all
+    run:
+      config: Debug
+    test:
+      targets: [AiboUITests]
